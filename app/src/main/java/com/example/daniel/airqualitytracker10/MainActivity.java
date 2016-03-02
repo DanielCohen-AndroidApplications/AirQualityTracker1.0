@@ -89,7 +89,7 @@ public class MainActivity extends FragmentActivity implements
     StringBuilder mySnippet;
 
     //string representations of retrieved data which are displayed in their appropriate textviews.
-    String responseString,location,strAdd,selection,result,breezometerAqi,aqDescription, pollutant, child, sport,health, indoors, outdoors,effects,causes;
+    String responseString,location,strAdd,selection,result,breezometerAqi,aqDescription, pollutant, child, sport,health, indoors, outdoors,effects,causes, emoticon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -424,7 +424,19 @@ public class MainActivity extends FragmentActivity implements
                 try {
                     aqi = new JSONObject(result);
                     breezometerAqi=aqi.optString("breezometer_aqi");
-
+                    int aqiInt=Integer.parseInt(breezometerAqi);
+                    if(aqiInt>80){
+                        emoticon="\uD83D\uDE00";
+                    }else if(aqiInt>70){
+                        emoticon="\uD83D\uDE0A";
+                    }else if(aqiInt>50){
+                        emoticon="\uD83D\uDE10";
+                    }else if(aqiInt>30){
+                        emoticon="\uD83D\uDE1F";
+                    }else{
+                        emoticon="\uD83D\uDE31";
+                    }
+                    breezometerAqi=breezometerAqi+emoticon;
                     gettingAqi=true;
                 } catch (Exception e) {
                     aqiException=true;
@@ -523,7 +535,7 @@ public class MainActivity extends FragmentActivity implements
                         mySnippet.append(System.getProperty("line.separator") + "Air Quality Index = " + breezometerAqi);
                     }
                     aqiTextView.setTextColor(Color.parseColor(aqi.optString("breezometer_color")));
-                    aqiTextView.setText(aqi.optString("breezometer_aqi"));
+                    aqiTextView.setText(breezometerAqi);
                 }catch(Exception e){
                     aqiException=true;
                 }
@@ -781,4 +793,3 @@ public class MainActivity extends FragmentActivity implements
         }
     }
 }
-
