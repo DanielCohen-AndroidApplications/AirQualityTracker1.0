@@ -12,7 +12,6 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -95,7 +94,7 @@ public class MainActivity extends FragmentActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        getActionBar();
         //default initial values, in case gps is not available
         latitude=0.0;
         longitude=0.0;
@@ -118,8 +117,7 @@ public class MainActivity extends FragmentActivity implements
         outdoorTextView=(TextView) findViewById(R.id.outdoorTextView);outdoorBtn=(Button) findViewById(R.id.outdoorBtn);
         effectsTextView=(TextView) findViewById(R.id.effectsTextView); effectsBtn=(Button) findViewById(R.id.effectsBtn);
         causesTextView=(TextView) findViewById(R.id.causesTextView); causesBtn=(Button) findViewById(R.id.causesBtn);
-        gpsTextView = (TextView) findViewById(R.id.gpsTextView); gpsBtn = (Button) findViewById(R.id.gpsBtn);
-
+        gpsBtn = (Button) findViewById(R.id.gpsBtn);
 
         //API webservice
         service = new HandleService();
@@ -134,7 +132,6 @@ public class MainActivity extends FragmentActivity implements
             public void onClick(View view) {
                 if(!editText.getText().toString().equals("")) {
                     usingGps = false;
-
                     aqiBtn.setVisibility(View.VISIBLE); aqiTextView.setVisibility(View.VISIBLE); aqiTextView.setText("");gettingAqi = false;aqiException = false;
                     descriptionBtn.setVisibility(View.VISIBLE); descriptionTextView.setVisibility(View.VISIBLE); descriptionTextView.setText("");gettingDescription = false; descriptionException = false;
                     polBtn.setVisibility(View.VISIBLE); polTextView.setVisibility(View.VISIBLE); polTextView.setText("");gettingPol = false; pollutantException = false;
@@ -145,9 +142,7 @@ public class MainActivity extends FragmentActivity implements
                     outdoorTextView.setText(""); outdoorTextView.setVisibility(View.VISIBLE);outdoorTextView.setText(""); gettingOutdoors = false; outdoorsException = false;
                     effectsTextView.setText(""); effectsTextView.setVisibility(View.VISIBLE);effectsTextView.setText(""); gettingEffects = false; effectsException = false;
                     causesTextView.setText(""); causesTextView.setVisibility(View.VISIBLE);causesTextView.setText(""); gettingCauses = false; causesException = false;
-
                     mySnippet = new StringBuilder("");
-
                     location = editText.getText().toString().replace(",", "").replace(" ", "+");
                     new LatLongTask().execute();
                 }
@@ -165,9 +160,7 @@ public class MainActivity extends FragmentActivity implements
             public void onClick(View view){
                 map.clear();
                 selection="aqi";
-//                longitude=Double.parseDouble(editText2.getText().toString());
                 gettingAqi=true;
-
                 new MyTask().execute(location);
             }
         });
@@ -177,9 +170,7 @@ public class MainActivity extends FragmentActivity implements
             public void onClick(View view){
                 map.clear();
                 selection="description";
-//                longitude=Double.parseDouble(editText2.getText().toString());
                 gettingDescription=true;
-
                 new MyTask().execute(location);
             }
         });
@@ -189,9 +180,7 @@ public class MainActivity extends FragmentActivity implements
             public void onClick(View view){
                 map.clear();
                 selection="pol";
-//                longitude=Double.parseDouble(editText2.getText().toString());
                 gettingPol=true;
-
                 new MyTask().execute(location);
             }
         });
@@ -202,8 +191,6 @@ public class MainActivity extends FragmentActivity implements
                 map.clear();
                 selection = "child";
                 gettingChild=true;
-//                longitude=Double.parseDouble(editText2.getText().toString());
-
                 new MyTask().execute(location);
             }
         });
@@ -214,8 +201,6 @@ public class MainActivity extends FragmentActivity implements
                 map.clear();
                 selection = "sport";
                 gettingSport=true;
-//                longitude=Double.parseDouble(editText2.getText().toString());
-
                 new MyTask().execute(location);
             }
         });
@@ -226,8 +211,6 @@ public class MainActivity extends FragmentActivity implements
                 map.clear();
                 selection = "health";
                 gettingHealth= true;
-//                longitude=Double.parseDouble(editText2.getText().toString());
-
                 new MyTask().execute(location);
             }
         });
@@ -238,8 +221,6 @@ public class MainActivity extends FragmentActivity implements
                 map.clear();
                 selection = "indoors";
                 gettingIndoors=true;
-//                longitude=Double.parseDouble(editText2.getText().toString());
-
                 new MyTask().execute(location);
             }
         });
@@ -250,8 +231,6 @@ public class MainActivity extends FragmentActivity implements
                 map.clear();
                 selection = "outdoors";
                 gettingOutdoors=true;
-//                longitude=Double.parseDouble(editText2.getText().toString());
-
                 new MyTask().execute(location);
             }
         });
@@ -262,8 +241,6 @@ public class MainActivity extends FragmentActivity implements
                 map.clear();
                 selection = "effects";
                 gettingEffects=true;
-//                longitude=Double.parseDouble(editText2.getText().toString());
-
                 new MyTask().execute(location);
             }
         });
@@ -274,8 +251,6 @@ public class MainActivity extends FragmentActivity implements
                 map.clear();
                 selection = "causes";
                 gettingCauses=true;
-//                longitude=Double.parseDouble(editText2.getText().toString());
-
                 new MyTask().execute(location);
             }
         });
@@ -299,11 +274,9 @@ public class MainActivity extends FragmentActivity implements
                 strAdd = getCompleteAddressString(latitude, longitude);
                 location=strAdd.replace(",","").replace(" ", "+");
                 if(!(strAdd.equals(""))) {
-                    editText.setHint("To get a new location, type address/city/state/country/ZIP code etc. here");
                     locationBtn.setText("Get new location");
-                    gpsTextView.setText("Automatically Got GPS Location : " + strAdd);
+                    editText.setText(strAdd);
                 }
-                Log.v("_dan_location",location);
                 break;
             }
         }
@@ -387,14 +360,12 @@ public class MainActivity extends FragmentActivity implements
                             "\n");
                 }
                 strAdd = strReturnedAddress.toString();
-                Log.w("My Current address",
-                        "" + strReturnedAddress.toString());
-            } else {
-                Log.w("My Current address", "No Address returned!");
+
             }
+
         } catch (Exception e) {
             e.printStackTrace();
-            Log.w("My Current address", "Canont get Address!");
+
         }
         return strAdd;
     }
@@ -418,7 +389,6 @@ public class MainActivity extends FragmentActivity implements
     class MyTask extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... params) {
-            Log.i("data_dan", service.getAQ(params[0], usingGps, latitude, longitude));
             result=service.getAQ(params[0], usingGps, latitude,longitude);
             if(selection.equals("aqi")) {
                 try {
@@ -429,7 +399,9 @@ public class MainActivity extends FragmentActivity implements
                         emoticon="\uD83D\uDE00";
                     }else if(aqiInt>70){
                         emoticon="\uD83D\uDE0A";
-                    }else if(aqiInt>50){
+                    }else if(aqiInt>60){
+                        emoticon="\uD83D\uDE0C";
+                    } else if(aqiInt>50){
                         emoticon="\uD83D\uDE10";
                     }else if(aqiInt>30){
                         emoticon="\uD83D\uDE1F";
@@ -702,17 +674,12 @@ public class MainActivity extends FragmentActivity implements
             JSONObject latLong=new JSONObject();
             try {
                 latLong=getLatLong();
-                Log.v("JSON_result_dan",latLong.toString());
-                Log.v("JSON_result_dan2", latLong.optJSONArray("results").toString());
                 JSONArray resultJSONArray = latLong.optJSONArray("results");
                 JSONObject locationJSONObj = resultJSONArray.getJSONObject(0).optJSONObject("geometry").optJSONObject("location");
                 latitude=locationJSONObj.optDouble("lat");
                 longitude=locationJSONObj.optDouble("lng");
-                Log.v("_dan_loc",locationJSONObj.toString());
-                Log.v("_dan_lat",latitude+"");
-                Log.v("_dan_lng",longitude+"");
             }catch(Exception e){
-                Log.v("_dan",e.getMessage());
+                e.printStackTrace();
             }
             return latLong;
         }
@@ -741,10 +708,9 @@ public class MainActivity extends FragmentActivity implements
             HttpEntity httpEntity = response.getEntity();
             responseString = EntityUtils.toString(httpEntity);
             locationInfo = new JSONObject(responseString);
-//            locationObj = locationInfo.optJSONObject("results").optJSONObject("geometry").optJSONObject("location");
-//            locationObj = locationInfo.optJSONObject("results");
+
         }catch(Exception e){
-            Log.v("data_dan_latlng", "nil");
+            e.printStackTrace();
         }
         return locationInfo;
 
@@ -784,12 +750,7 @@ public class MainActivity extends FragmentActivity implements
                 return info;
             }
         });
-
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
-        try {
-            Log.v("data_dan_JSON", getLatLong()+"");
-        }catch(Exception e){
-            Log.v("data_dan_JSON", "nil");
-        }
     }
+
 }

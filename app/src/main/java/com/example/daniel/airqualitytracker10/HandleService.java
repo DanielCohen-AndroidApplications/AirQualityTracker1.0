@@ -3,7 +3,6 @@ package com.example.daniel.airqualitytracker10;
 /**
  * Created by Daniel on 2/29/2016.
  */
-import android.util.Log;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -11,8 +10,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONObject;
-
 import java.net.URI;
 
 
@@ -37,7 +34,7 @@ public class HandleService {
             HttpEntity httpEntity = response.getEntity();
             responseString = EntityUtils.toString(httpEntity);
         }catch (Exception e){
-            Log.v("exception_dan", e.getMessage());
+            e.printStackTrace();
         }
 
         return responseString;
